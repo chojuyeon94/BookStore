@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class MemberDto {
@@ -42,6 +43,7 @@ public class MemberDto {
         private long memberId;
         private String email;
         private String nickname;
+        private BigDecimal mileage;
         private LocalDateTime createDate;
 
     }

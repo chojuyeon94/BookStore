@@ -5,7 +5,7 @@ import org.mapstruct.Mapper;
 import solo.bookstore.domain.member.entity.Member;
 import solo.bookstore.domain.member.dto.MemberDto;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface MemberMapper {
 
     default Member memberPostDtoToMember(MemberDto.Post post) {
