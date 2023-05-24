@@ -1,8 +1,10 @@
 package solo.bookstore.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import solo.bookstore.domain.member.entity.Member;
 import solo.bookstore.global.exception.BusinessLogicException;
 import solo.bookstore.domain.member.repository.MemberRepository;
@@ -39,6 +41,19 @@ public class MemberService {
 
     }
 
+    public Member updateMember(Member member) {
+        Member findMember = findByEmail();
+
+        if (member.getPassword() != null) {
+            findMember.setPassword(passwordEncoder.encode(member.getPassword()));
+        }
+
+        Optional.ofNullable(member.getNickname()).ifPresent(username -> findMember.setNickname(username));
+        verifyExistsNickName(member.getNickname());
+
+        return memberRepository.save(findMember);
+    }
+
     private void verifyExistsEmail(String email) {
         Optional<Member> member = memberRepository.findByEmail(email);
         if (member.isPresent())
@@ -50,4 +65,21 @@ public class MemberService {
         if (member.isPresent())
             throw new BusinessLogicException(ExceptionCode.MEMBER_NICKNAME_EXISTS);
     }
+
+    public Member findByEmail() {
+        String email = getCurrentMemberEmail();
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+        return optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.TOKEN_NOT_VALID));
+    }
+
+    public String getCurrentMemberEmail() {
+        return (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
+    @Transactional
+    public Member findByEmail(String email){
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+        return optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+    }
+
 }

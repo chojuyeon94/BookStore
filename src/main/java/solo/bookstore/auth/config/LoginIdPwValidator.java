@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+/*
 @Service
 public class LoginIdPwValidator implements UserDetailsService {
 
@@ -17,6 +17,7 @@ public class LoginIdPwValidator implements UserDetailsService {
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
 
     @Autowired
     private UserM
@@ -27,3 +28,4 @@ public class LoginIdPwValidator implements UserDetailsService {
     }
 
 }
+*/
