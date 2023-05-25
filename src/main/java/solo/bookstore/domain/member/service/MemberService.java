@@ -1,10 +1,13 @@
 package solo.bookstore.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import solo.bookstore.auth.JwtService;
 import solo.bookstore.domain.member.entity.Member;
 import solo.bookstore.global.exception.BusinessLogicException;
 import solo.bookstore.domain.member.repository.MemberRepository;
@@ -17,69 +20,37 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final MemberRepository memberRepository;
+    private MemberRepository memberRepository;
+    private JwtService jwtService;
+    private BCryptPasswordEncoder passwordEncoder;
 
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    public MemberService(MemberRepository memberRepository, JwtService jwtService, BCryptPasswordEncoder passwordEncoder){
 
-    //private final CustomAuthorityUtils authorityUtils;
-
-    public Member createMember(Member member){
-
-        verifyExistsEmail(member.getEmail());
-        verifyExistsNickName(member.getNickname());
-
-        String encryptedPassword = passwordEncoder.encode(member.getPassword());
-        member.setPassword(encryptedPassword);
-
-        //List<String> roles = authorityUtils.createRoles(member.getEmail());
-        //member.setRoles(roles);
-
-
-        Member savedMember = memberRepository.save(member);
-
-        return savedMember;
+        this.memberRepository = memberRepository;
+        this.jwtService = jwtService;
+        this.passwordEncoder = passwordEncoder;
 
     }
 
-    public Member updateMember(Member member) {
-        Member findMember = findByEmail();
+    public Member postMember(Member member){
 
-        if (member.getPassword() != null) {
-            findMember.setPassword(passwordEncoder.encode(member.getPassword()));
+        Optional<Member> checkExistMember = memberRepository.findByEmail(member.getEmail());
+        if(checkExistMember.isPresent()){
+            throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
         }
 
-        Optional.ofNullable(member.getNickname()).ifPresent(username -> findMember.setNickname(username));
-        verifyExistsNickName(member.getNickname());
+        String hashedPassword = passwordEncoder.encode(member.getPassword());
 
-        return memberRepository.save(findMember);
+        Member newMember = new Member();
+        newMember.setEmail(member.getEmail());
+        newMember.setPassword(hashedPassword);
+        newMember.setNickname(member.getNickname());
+
+        return memberRepository.save(newMember);
+
     }
 
-    private void verifyExistsEmail(String email) {
-        Optional<Member> member = memberRepository.findByEmail(email);
-        if (member.isPresent())
-            throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
-    }
 
-    private void verifyExistsNickName(String nickname) {
-        Optional<Member> member = memberRepository.findByNickname(nickname);
-        if (member.isPresent())
-            throw new BusinessLogicException(ExceptionCode.MEMBER_NICKNAME_EXISTS);
-    }
-
-    public Member findByEmail() {
-        String email = getCurrentMemberEmail();
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        return optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.TOKEN_NOT_VALID));
-    }
-
-    public String getCurrentMemberEmail() {
-        return (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
-
-    @Transactional
-    public Member findByEmail(String email){
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        return optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-    }
 
 }

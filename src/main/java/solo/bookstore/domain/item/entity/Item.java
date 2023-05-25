@@ -31,6 +31,16 @@ public class Item extends BaseTime {
     @Column(name = "item_stock")
     private Long stock;
 
+    @Column(name = "item_category")
+    @Enumerated(value = EnumType.STRING)
+    private ItemCategory itemCategory;
+
+    @Column(name = "book_category")
+    @Enumerated(value = EnumType.STRING)
+    private BookCategory bookCategory;
+
+
+
 
 
 }

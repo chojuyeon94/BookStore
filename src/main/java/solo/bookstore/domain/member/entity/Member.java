@@ -23,13 +23,13 @@ public class Member extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(length = 8, nullable = false)
     private String nickname;
 
     @Column(nullable = false)
@@ -37,7 +37,13 @@ public class Member extends BaseTime {
 
     private boolean deleted = false;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> roles = new ArrayList<>();
+    private boolean isAdmin = false;
+
+    public Member(String email, String password, String nickname, BigDecimal mileage){
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.mileage = new BigDecimal(0);
+    }
 
 }
