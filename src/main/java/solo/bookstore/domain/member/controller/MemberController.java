@@ -28,7 +28,7 @@ public class MemberController {
 
     ResponseEntity postMember(@Valid @RequestBody MemberDto.Post postDto){
 
-        Member member = memberService.createMember(memberMapper.memberPostDtoToMember(postDto));
+        Member member = memberService.postMember(memberMapper.memberPostDtoToMember(postDto));
         //return new ResponseEntity(new SingleResponseDto<>(memberMapper.createMemberToMemberResponseDto(member)), HttpStatus.CREATED);
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -37,17 +37,17 @@ public class MemberController {
     @PatchMapping("/updateinfo")
     ResponseEntity updateMember(@Valid @RequestBody MemberDto.Patch patchDto){
 
-        Member member = memberService.updateMember(memberMapper.memberPatchDtoToMember(patchDto));
+        Member member = memberService.postMember(memberMapper.memberPatchDtoToMember(patchDto));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/mypage")
+   /* @GetMapping("/mypage")
     public ResponseEntity getMember(){
 
         Member member =memberService.findByEmail();
         //MemberDto.Response response =memberMapper.
 
     }
-
+*/
 
 }
