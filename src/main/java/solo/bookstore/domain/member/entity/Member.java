@@ -29,7 +29,7 @@ public class Member extends BaseTime {
     @Column(nullable = false)
     private String password;
 
-    @Column(length = 8, nullable = false)
+    @Column(length = 8, nullable = false, unique = true)
     private String nickname;
 
     @Column(nullable = false)
@@ -37,7 +37,7 @@ public class Member extends BaseTime {
 
     private boolean deleted = false;
 
-    private boolean isAdmin = false;
+    private Roles roles;
 
     public Member(String email, String password, String nickname, BigDecimal mileage){
         this.email = email;

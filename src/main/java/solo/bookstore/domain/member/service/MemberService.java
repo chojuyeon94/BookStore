@@ -5,13 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import solo.bookstore.auth.JwtService;
+import solo.bookstore.auth.jwt.JwtProvider;
 import solo.bookstore.domain.member.entity.Member;
 import solo.bookstore.global.exception.BusinessLogicException;
 import solo.bookstore.domain.member.repository.MemberRepository;
 import solo.bookstore.global.exception.ExceptionCode;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,14 +18,14 @@ import java.util.Optional;
 public class MemberService {
 
     private MemberRepository memberRepository;
-    private JwtService jwtService;
+    private JwtProvider jwtProvider;
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public MemberService(MemberRepository memberRepository, JwtService jwtService, BCryptPasswordEncoder passwordEncoder){
+    public MemberService(MemberRepository memberRepository, JwtProvider jwtProvider, BCryptPasswordEncoder passwordEncoder){
 
         this.memberRepository = memberRepository;
-        this.jwtService = jwtService;
+        this.jwtProvider = jwtProvider;
         this.passwordEncoder = passwordEncoder;
 
     }
@@ -48,7 +47,7 @@ public class MemberService {
         return memberRepository.save(newMember);
 
     }
-
+/*
     public Member updateMemberInfo(String token) {
         Member findMember = findByEmail(token);
 
@@ -89,12 +88,13 @@ public class MemberService {
             throw new BusinessLogicException(ExceptionCode.MEMBER_NICKNAME_EXISTS);
     }
 
+
     public Member findByEmail(String token) {
-        String email = jwtService.getEmailFromToken(token);
+        String email = jwtProvider.getEmailFromToken(token);
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
         return optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.TOKEN_NOT_VALID));
     }
-
+*/
 
 
 }
