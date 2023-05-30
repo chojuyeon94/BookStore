@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import solo.bookstore.domain.member.entity.Roles;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ public class CustomAuthUtils {
 
     private final List<String> USER_ROLES_STRING = List.of("USER");
 
-    public List<GrantedAuthority> createAuthorities(List<String> roles) {
+    public List<GrantedAuthority> createAuthorities(List<Roles> roles) {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                 .collect(Collectors.toList());
