@@ -37,7 +37,8 @@ public class Member extends BaseTime {
 
     private boolean deleted = false;
 
-    private Roles roles;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles = new ArrayList<>();
 
     public Member(String email, String password, String nickname, BigDecimal mileage){
         this.email = email;
